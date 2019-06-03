@@ -1,4 +1,4 @@
-import { RLE_COMPRESS_LOOKUP_TABLE, RLE_DECOMPRESS_LOOKUP_TABLE } from "./constants";
+import { RLE_ALPHABET } from "./constants";
 
 const RUN_MIN_LENGTH = 3;
 const ONE_TRYTE_MAX = 26;
@@ -83,16 +83,16 @@ export function runLengthDecode(encoded: string): string {
  */
 function numberToRle(val: number): string {
     if (val <= ONE_TRYTE_MAX) {
-        return `1${lookupBinary(val)}`;
+        return `1${RLE_ALPHABET[val]}`;
     } else if (val <= TWO_TRYTE_MAX) {
         const val1 = val % 27;
         const val2 = (val - val1) / 27;
-        return `2${lookupBinary(val1)}${lookupBinary(val2)}`;
+        return `2${RLE_ALPHABET[val1]}${RLE_ALPHABET[val2]}`;
     } else {
         const val1 = val % 27;
         const val2 = ((val - val1) / 27) % 27;
         const val3 = (val - (val2 * 27) - val1) / (27 * 27);
-        return `3${lookupBinary(val1)}${lookupBinary(val2)}${lookupBinary(val3)}`;
+        return `3${RLE_ALPHABET[val1]}${RLE_ALPHABET[val2]}${RLE_ALPHABET[val3]}`;
     }
 }
 
@@ -105,32 +105,12 @@ function numberToRle(val: number): string {
  * @private
  */
 function rleToNumber(t1: string, t2?: string, t3?: string): number {
-    let val = lookupTryte(t1);
+    let val = RLE_ALPHABET.indexOf(t1);
     if (t2 !== undefined) {
-        val += lookupTryte(t2) * 27;
+        val += RLE_ALPHABET.indexOf(t2) * 27;
     }
     if (t3 !== undefined) {
-        val += lookupTryte(t3) * 27 * 27;
+        val += RLE_ALPHABET.indexOf(t3) * 27 * 27;
     }
     return val;
-}
-
-/**
- * Lookup the tryte binary equivalent in the decompress table.
- * @param num The number to lookup.
- * @returns The trytes value.
- * @private
- */
-function lookupBinary(num: number): string {
-    return RLE_DECOMPRESS_LOOKUP_TABLE[num.toString(2).padStart(5, "0")];
-}
-
-/**
- * Lookup the value of the tryte from the compress table.
- * @param tryte The trytes to lookup.
- * @returns The value equivalent.
- * @private
- */
-function lookupTryte(tryte: string): number {
-    return parseInt(RLE_COMPRESS_LOOKUP_TABLE[tryte], 2);
 }
