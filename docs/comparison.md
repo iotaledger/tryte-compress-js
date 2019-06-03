@@ -1,2 +1,0 @@
-# IOTA Compression Comparison
-
