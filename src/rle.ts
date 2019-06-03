@@ -19,23 +19,24 @@ export function runLengthEncode(trytes: string): string {
         throw new Error("You can only run length encode trytes with the algorithm.");
     }
 
-    let output = "";
-    const matches = trytes.match(/(.)\1*/g);
+    let encoded = "";
+    let prev;
+    let i;
+    let count;
 
-    if (matches) {
-        matches.forEach((fullRun) => {
-            let run = fullRun;
-            while (run.length >= RUN_MIN_LENGTH) {
-                const currentRun = run.substr(0, Math.min(THREE_TRYTE_MAX, run.length));
-                output += numberToRle(currentRun.length);
-                output += currentRun[0];
-                run = run.substr(currentRun.length);
-            }
-            output += run;
-        });
+    for (count = 1, prev = trytes[0], i = 1; i < trytes.length; i++) {
+        if (trytes[i] !== prev) {
+            encoded += appendRun(count, prev);
+            count = 1;
+            prev = trytes[i];
+        } else {
+            count ++;
+        }
     }
 
-    return output;
+    encoded += appendRun(count, prev);
+
+    return encoded;
 }
 
 /**
@@ -73,6 +74,30 @@ export function runLengthDecode(encoded: string): string {
     }
 
     return output;
+}
+
+/**
+ * Append a run of characters to the output.
+ * @param count The number of chars.
+ * @param prev The character to add.
+ * @returns The encoded run.
+ * @private
+ */
+function appendRun(count: number, prev: string): string {
+    let encoded = "";
+
+    while (count >= RUN_MIN_LENGTH) {
+        const currentRunLength = Math.min(THREE_TRYTE_MAX, count);
+        encoded += numberToRle(currentRunLength);
+        encoded += prev;
+        count -= currentRunLength;
+    }
+
+    if (count > 0) {
+        encoded += prev.repeat(count);
+    }
+
+    return encoded;
 }
 
 /**
