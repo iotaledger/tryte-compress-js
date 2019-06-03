@@ -1,20 +1,12 @@
 {
-  "name": "zmq",
+  "name": "huffman-trainer",
   "description": "IOTA Compression ZMQ",
   "version": "1.0.0",
-  "main": "zmq.js",
+  "main": "huffmanTrainer.js",
   "scripts": {
-    "run": "node zmq"
+    "run": "node huffmanTrainer"
   },
   "dependencies": {
-    "@iota/core": "^1.0.0-beta.11",
-    "brotli": "^1.3.2",
-    "compressjs": "^1.0.3",
-    "kld-bit-streams": "0.0.1",
-    "kld-huffman-coding": "0.0.2",
-    "lz4": "^0.6.2",
-    "lzjs": "^1.3.0",
-    "pako": "^1.0.10",
     "zeromq": "^5.1.0"
   }
 }

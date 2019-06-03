@@ -81,6 +81,7 @@ To see the code in use there are some samples in the examples folder.
 
 * [simple](./examples/simple/) - The example code show above.
 * [huffmanTrainer](./examples/huffmanTrainer/) - The code which creates the static huffman tables by analyzing zmq stream.
+* [random](./examples/random/) - Example processing random generated packets.
 * [zmq](./examples/zmq/) - Example which monitors zmq stream and shows the potential compression ratios achieved with different algorithms.
 
 ## Results
