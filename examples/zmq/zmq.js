@@ -41,68 +41,68 @@ sock.on('message', async msg => {
     console.log();
     console.log(trytes);
 
-    let st = Date.now();
+    let st = process.hrtime();
     const brotliOutput = brotli.compress(trytesBuffer);
-    let end = Date.now();
-    console.log(`Brotli - Compressed Size: ${brotliOutput.length} bytes, Time: ${end - st}ms`);
+    let end = process.hrtime();
+    console.log(`Brotli - Compressed Size: ${brotliOutput.length} bytes, Time: ${diffHrtime(st, end)}ms`);
     summary.brotli[0] += brotliOutput.length;
-    summary.brotli[1] += end - st;
+    summary.brotli[1] += diffHrtime(st, end);
     summary.brotli[2] = Math.max(summary.brotli[2], brotliOutput.length);
     summary.brotli[3] = Math.min(summary.brotli[3], brotliOutput.length);
 
-    st = Date.now();
+    st = process.hrtime();
     const deflateOutput = pako.deflateRaw(trytesBuffer);
-    end = Date.now();
-    console.log(`Deflate - Compressed Size: ${deflateOutput.length} bytes, Time: ${end - st}ms`);
+    end = process.hrtime();
+    console.log(`Deflate - Compressed Size: ${deflateOutput.length} bytes, Time: ${diffHrtime(st, end)}ms`);
     summary.deflate[0] += deflateOutput.length;
-    summary.deflate[1] += end - st;
+    summary.deflate[1] += diffHrtime(st, end);
     summary.deflate[2] = Math.max(summary.deflate[2], deflateOutput.length);
     summary.deflate[3] = Math.min(summary.deflate[3], deflateOutput.length);
 
-    st = Date.now();
+    st = process.hrtime();
     const huffmanOutput = compressjs.Huffman.compressFile(trytesBuffer);
-    end = Date.now();
-    console.log(`Huffman - Compressed Size: ${huffmanOutput.length} bytes, Time: ${end - st}ms`);
+    end = process.hrtime();
+    console.log(`Huffman - Compressed Size: ${huffmanOutput.length} bytes, Time: ${diffHrtime(st, end)}ms`);
     summary.huffman[0] += huffmanOutput.length;
-    summary.huffman[1] += end - st;
+    summary.huffman[1] += diffHrtime(st, end);
     summary.huffman[2] = Math.max(summary.huffman[2], huffmanOutput.length);
     summary.huffman[3] = Math.min(summary.huffman[3], huffmanOutput.length);
 
-    st = Date.now();
+    st = process.hrtime();
     const lzOutput = lz.compress(trytesBuffer);
-    end = Date.now();
-    console.log(`Lz - Compressed Size: ${lzOutput.length} bytes, Time: ${end - st}ms`);
+    end = process.hrtime();
+    console.log(`Lz - Compressed Size: ${lzOutput.length} bytes, Time: ${diffHrtime(st, end)}ms`);
     summary.lz[0] += lzOutput.length;
-    summary.lz[1] += end - st;
+    summary.lz[1] += diffHrtime(st, end);
     summary.lz[2] = Math.max(summary.lz[2], lzOutput.length);
     summary.lz[3] = Math.min(summary.lz[3], lzOutput.length);
 
-    st = Date.now();
+    st = process.hrtime();
     let lz4Output = new Buffer(lz4.encodeBound(trytes.length));
     const compressedSize = lz4.encodeBlock(trytesBuffer, lz4Output);
     lz4Output = lz4Output.slice(0, compressedSize);
-    end = Date.now();
-    console.log(`Lz4 - Compressed Size: ${lz4Output.length} bytes, Time: ${end - st}ms`);
+    end = process.hrtime();
+    console.log(`Lz4 - Compressed Size: ${lz4Output.length} bytes, Time: ${diffHrtime(st, end)}ms`);
     summary.lz4[0] += lz4Output.length;
-    summary.lz4[1] += end - st;
+    summary.lz4[1] += diffHrtime(st, end);
     summary.lz4[2] = Math.max(summary.lz4[2], lz4Output.length);
     summary.lz4[3] = Math.min(summary.lz4[3], lz4Output.length);
 
-    st = Date.now();
+    st = process.hrtime();
     const bzip2Output = compressjs.Bzip2.compressFile(trytesBuffer);
-    end = Date.now();
-    console.log(`Bzip2 - Compressed Size: ${bzip2Output.length} bytes, Time: ${end - st}ms`);
+    end = process.hrtime();
+    console.log(`Bzip2 - Compressed Size: ${bzip2Output.length} bytes, Time: ${diffHrtime(st, end)}ms`);
     summary.bzip2[0] += bzip2Output.length;
-    summary.bzip2[1] += end - st;
+    summary.bzip2[1] += diffHrtime(st, end);
     summary.bzip2[2] = Math.max(summary.bzip2[2], bzip2Output.length);
     summary.bzip2[3] = Math.min(summary.bzip2[3], bzip2Output.length);
 
-    st = Date.now();
+    st = process.hrtime();
     const trytesOutput = compress(trytes);
-    end = Date.now();
-    console.log(`Trytes - Compressed Size: ${trytesOutput.length} bytes, Time: ${end - st}ms`);
+    end = process.hrtime();
+    console.log(`Trytes - Compressed Size: ${trytesOutput.length} bytes, Time: ${diffHrtime(st, end)}ms`);
     summary.trytes[0] += trytesOutput.length;
-    summary.trytes[1] += end - st;
+    summary.trytes[1] += diffHrtime(st, end);
     summary.trytes[2] = Math.max(summary.trytes[2], trytesOutput.length);
     summary.trytes[3] = Math.min(summary.trytes[3], trytesOutput.length);
 
@@ -121,10 +121,10 @@ process.on('SIGINT', function () {
         console.log('Summary');
         console.log(`Averages over ${summaryCount} messages processed `);
         console.log();
-        for(const key in summary) {
+        for (const key in summary) {
             const avSize = Math.ceil(summary[key][0] / summaryCount);
             const avSaving = (100 - (avSize / 2673 * 100)).toFixed(1);
-            const avTime = Math.ceil(summary[key][1] / summaryCount);
+            const avTime = (summary[key][1] / summaryCount).toFixed(4);
             console.log(`${key} - Compressed Size: ${avSize} bytes, Saving Size: ${avSaving} %, Time: ${avTime}ms, Max: ${summary[key][2]} bytes, Min: ${summary[key][3]} bytes`);
         }
     }
@@ -133,3 +133,17 @@ process.on('SIGINT', function () {
     console.log('Exiting...');
     process.exit(2);
 });
+
+
+function diffHrtime(b, a) {
+    // desctructure/capture secs and nanosecs
+    var as = a[0], ans = a[1],
+        bs = b[0], bns = b[1],
+        ns = ans - bns, // nanosecs delta, can overflow (will be negative)
+        s = as - bs     // secs delta
+    if (ns < 0) { // has overflowed
+        s -= 1      // cut a second
+        ns += 1e9   // add a billion nanosec (to neg number)
+    }
+    return s * 1000 + ns / 1000000
+}
