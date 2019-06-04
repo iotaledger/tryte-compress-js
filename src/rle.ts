@@ -20,11 +20,10 @@ export function runLengthEncode(trytes: string): string {
     }
 
     let encoded = "";
-    let prev;
-    let i;
-    let count;
+    let prev = trytes[0];
+    let count = 1;
 
-    for (count = 1, prev = trytes[0], i = 1; i < trytes.length; i++) {
+    for (let i = 1; i < trytes.length; i++) {
         if (trytes[i] !== prev) {
             encoded += appendRun(count, prev);
             count = 1;

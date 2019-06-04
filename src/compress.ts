@@ -36,6 +36,7 @@ export function compress(trytes: string): Buffer | undefined {
 
     // If there are any remaining bits make sure we don't miss them
     if (encoded.length > 0) {
+        // Pad the remaining bits with 0
         bytes.push(parseInt(`${encoded}${"0".repeat(8 - encoded.length)}`, 2));
     }
 
