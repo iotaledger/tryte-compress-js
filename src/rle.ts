@@ -1,5 +1,3 @@
-import { RLE_ALPHABET } from "./constants";
-
 const RUN_MIN_LENGTH = 3;
 const ONE_TRYTE_MAX = 26;
 const TWO_TRYTE_MAX = 728;
@@ -8,133 +6,143 @@ const THREE_TRYTE_MAX = 19682;
 /**
  * Run length encode the tryte string.
  * @param trytes The trytes to run length encode.
- * @returns The run length encoded trytes.
+ * @param rleEncoded The rle encoded data.
+ * @returns The run length encoded length.
+ * @private
  */
-export function runLengthEncode(trytes: string): string {
-    if (trytes === undefined || trytes === null || trytes.length === 0) {
-        return "";
-    }
-
-    if (!/^[ABCDEFGHIJKLMNOPQRSTUVWXYZ9]*$/.test(trytes)) {
-        throw new Error("You can only run length encode trytes with the algorithm.");
-    }
-
-    let encoded = "";
+export function runLengthEncode(trytes: Buffer, rleEncoded: Buffer): number {
+    let writePos = 0;
     let prev = trytes[0];
     let count = 1;
 
     for (let i = 1; i < trytes.length; i++) {
         if (trytes[i] !== prev) {
-            encoded += appendRun(count, prev);
+            writePos = appendRun(rleEncoded, writePos, count, prev);
             count = 1;
             prev = trytes[i];
         } else {
-            count ++;
+            count++;
         }
     }
 
-    encoded += appendRun(count, prev);
+    writePos = appendRun(rleEncoded, writePos, count, prev);
 
-    return encoded;
+    return writePos;
 }
 
 /**
  * Decode the run length encoded trytes,
  * @param encoded The run length encoded data.
  * @returns The plain trytes.
+ * @private
  */
-export function runLengthDecode(encoded: string): string {
-    if (encoded === undefined || encoded === null || encoded.length === 0) {
-        return "";
-    }
-
-    if (!/^[ABCDEFGHIJKLMNOPQRSTUVWXYZ9123]*$/.test(encoded)) {
-        throw new Error("You can only decompress run length encoded trytes with the algorithm.");
-    }
-
-    let output = "";
+export function runLengthDecode(encoded: number[]): Buffer {
+    const decoded: number[] = [];
 
     for (let i = 0; i < encoded.length; i++) {
-        if (encoded[i] === "1") {
-            const length = rleToNumber(encoded[i + 1]);
-            output += encoded[i + 2].repeat(length);
+        if (encoded[i] === 49) {
+            rleToNumber(decoded, encoded[i + 2], encoded[i + 1]);
             i += 2;
-        } else if (encoded[i] === "2") {
-            const length = rleToNumber(encoded[i + 1], encoded[i + 2]);
-            output += encoded[i + 3].repeat(length);
+        } else if (encoded[i] === 50) {
+            rleToNumber(decoded, encoded[i + 3], encoded[i + 1], encoded[i + 2]);
             i += 3;
-        } else if (encoded[i] === "3") {
-            const length = rleToNumber(encoded[i + 1], encoded[i + 2], encoded[i + 3]);
-            output += encoded[i + 4].repeat(length);
+        } else if (encoded[i] === 51) {
+            rleToNumber(decoded, encoded[i + 4], encoded[i + 1], encoded[i + 2], encoded[i + 3]);
             i += 4;
         } else {
-            output += encoded[i];
+            decoded.push(encoded[i]);
         }
     }
 
-    return output;
+    return Buffer.from(decoded);
 }
 
 /**
  * Append a run of characters to the output.
+ * @param encoded The rle encoded data.
+ * @param writePos The current position to write into the buffer.
  * @param count The number of chars.
  * @param prev The character to add.
- * @returns The encoded run.
+ * @returns The updated write position.
  * @private
  */
-function appendRun(count: number, prev: string): string {
-    let encoded = "";
+function appendRun(encoded: Buffer, writePos: number, count: number, prev: number): number {
+    let localWritePos = writePos;
 
-    while (count >= RUN_MIN_LENGTH) {
-        const currentRunLength = Math.min(THREE_TRYTE_MAX, count);
-        encoded += numberToRle(currentRunLength);
-        encoded += prev;
-        count -= currentRunLength;
+    if (count === 1) {
+        encoded.writeUInt8(prev, localWritePos++);
+    } else {
+        let remaining = count;
+
+        while (remaining >= RUN_MIN_LENGTH) {
+            const currentRunLength = Math.min(THREE_TRYTE_MAX, remaining);
+            localWritePos = numberToRle(encoded, localWritePos, prev, currentRunLength);
+            remaining -= currentRunLength;
+        }
+
+        if (remaining > 0) {
+            for (let i = 0; i < remaining; i++) {
+                encoded.writeUInt8(prev, localWritePos++);
+            }
+        }
     }
 
-    if (count > 0) {
-        encoded += prev.repeat(count);
-    }
-
-    return encoded;
+    return localWritePos;
 }
 
 /**
  * Convert the number to its run length encoded format.
+ * @param encoded The rle encoded data.
+ * @param writePos The current position to write into the buffer.
+ * @param charCode The char code of the number being repeated.
  * @param val The value to convert.
- * @returns The run length encoded number.
+ * @returns The updated writepos.
  * @private
  */
-function numberToRle(val: number): string {
+function numberToRle(encoded: Buffer, writePos: number, charCode: number, val: number): number {
+    let localWritePos = writePos;
     if (val <= ONE_TRYTE_MAX) {
-        return `1${RLE_ALPHABET[val]}`;
+        encoded.writeUInt8(49, localWritePos++);
+        encoded.writeUInt8(val === 0 ? 57 : val + 64, localWritePos++);
     } else if (val <= TWO_TRYTE_MAX) {
         const val1 = val % 27;
         const val2 = (val - val1) / 27;
-        return `2${RLE_ALPHABET[val1]}${RLE_ALPHABET[val2]}`;
+        encoded.writeUInt8(50, localWritePos++);
+        encoded.writeUInt8(val1 === 0 ? 57 : val1 + 64, localWritePos++);
+        encoded.writeUInt8(val2 === 0 ? 57 : val2 + 64, localWritePos++);
     } else {
         const val1 = val % 27;
         const val2 = ((val - val1) / 27) % 27;
         const val3 = (val - (val2 * 27) - val1) / (27 * 27);
-        return `3${RLE_ALPHABET[val1]}${RLE_ALPHABET[val2]}${RLE_ALPHABET[val3]}`;
+        encoded.writeUInt8(51, localWritePos++);
+        encoded.writeUInt8(val1 === 0 ? 57 : val1 + 64, localWritePos++);
+        encoded.writeUInt8(val2 === 0 ? 57 : val2 + 64, localWritePos++);
+        encoded.writeUInt8(val3 === 0 ? 57 : val3 + 64, localWritePos++);
     }
+    encoded.writeUInt8(charCode, localWritePos++);
+
+    return localWritePos;
 }
 
 /**
  * Convert rle encoded number back to number,
+ * @param decoded The rle encoded data.
+ * @param charCode The char code of the number to repeat.
  * @param t1 The first tryte.
  * @param t2 The second tryte.
  * @param t3 The third tryte.
- * @returns The number,
  * @private
  */
-function rleToNumber(t1: string, t2?: string, t3?: string): number {
-    let val = RLE_ALPHABET.indexOf(t1);
+function rleToNumber(decoded: number[], charCode: number, t1: number, t2?: number, t3?: number): void {
+    let val = t1 === 57 ? 0 : t1 - 64;
     if (t2 !== undefined) {
-        val += RLE_ALPHABET.indexOf(t2) * 27;
+        val += (t2 === 57 ? 0 : t2 - 64) * 27;
     }
     if (t3 !== undefined) {
-        val += RLE_ALPHABET.indexOf(t3) * 27 * 27;
+        val += (t3 === 57 ? 0 : t3 - 64) * 27 * 27;
     }
-    return val;
+
+    for (let i = 0; i < val; i++) {
+        decoded.push(charCode);
+    }
 }

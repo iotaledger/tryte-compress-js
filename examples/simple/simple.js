@@ -4,23 +4,23 @@ let trytes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ9';
 console.log('trytes', trytes);
 console.log('trytes length', trytes.length);
 
-let compressedBytes = iotaCompress.compress(trytes);
-console.log('compressed', compressedBytes);
+let compressedBytes = iotaCompress.compressTrytes(trytes);
+console.log('compressed', Array.from(compressedBytes).map(b => b.toString(10)));
 console.log('compressed length', compressedBytes.length);
 
-let decompressed = iotaCompress.decompress(compressedBytes);
-console.log('decompressed', decompressed);
+let decompressed = iotaCompress.decompressTrytes(compressedBytes);
+console.log('decompressed', decompressed, decompressed.length);
 console.log('matches', decompressed === trytes);
 
 trytes = '9'.repeat(2673);
 console.log('trytes', trytes);
 console.log('trytes length', trytes.length);
 
-compressedBytes = iotaCompress.compress(trytes);
-console.log('compressed', compressedBytes);
+compressedBytes = iotaCompress.compressTrytes(trytes);
+console.log('compressed', Array.from(compressedBytes).map(b => b.toString(16)));
 console.log('compressed length', compressedBytes.length);
 
-decompressed = iotaCompress.decompress(compressedBytes);
-console.log('decompressed', decompressed);
+decompressed = iotaCompress.decompressTrytes(compressedBytes);
+console.log('decompressed', decompressed, decompressed.length);
 console.log('matches', decompressed === trytes);
 

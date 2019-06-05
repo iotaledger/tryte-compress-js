@@ -1,13 +1,13 @@
 import * as crypto from "crypto";
-import { compress } from "../src/compress";
-import { decompress } from "../src/decompress";
+import { compressTrytes } from "../src/compress";
+import { decompressTrytes } from "../src/decompress";
 
 test("compress and decompress 81 trytes x1000", () => {
     for (let i = 0; i < 1000; i++) {
         const trytes = generateHash(81);
-        const compressed = compress(trytes);
+        const compressed = compressTrytes(trytes);
         if (compressed) {
-            const decompressed = decompress(compressed);
+            const decompressed = decompressTrytes(compressed);
             expect(decompressed).toBe(trytes);
         }
     }
@@ -16,9 +16,9 @@ test("compress and decompress 81 trytes x1000", () => {
 test("compress and decompress 2673 trytes x1000", () => {
     for (let i = 0; i < 1000; i++) {
         const trytes = generateHash(2673);
-        const compressed = compress(trytes);
+        const compressed = compressTrytes(trytes);
         if (compressed) {
-            const decompressed = decompress(compressed);
+            const decompressed = decompressTrytes(compressed);
             expect(decompressed).toBe(trytes);
         }
     }

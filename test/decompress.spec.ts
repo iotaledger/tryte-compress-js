@@ -1,7 +1,7 @@
 import { decompress } from "../src/decompress";
 
 test("decompress() can fail on invalid value", () => {
-    expect(decompress(<any>undefined)).toBe("");
-    expect(decompress(<any>null)).toBe("");
-    expect(decompress(Buffer.from(""))).toBe("");
+    expect(() => decompress(<any>undefined)).toThrowError(/no data/);
+    expect(() => decompress(<any>null)).toThrowError(/no data/);
+    expect(() => decompress(Buffer.from(""))).toThrowError(/no data/);
 });

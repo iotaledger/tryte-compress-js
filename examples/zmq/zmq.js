@@ -98,7 +98,7 @@ sock.on('message', async msg => {
     summary.bzip2[3] = Math.min(summary.bzip2[3], bzip2Output.length);
 
     st = process.hrtime();
-    const trytesOutput = compress(trytes);
+    const trytesOutput = compress(trytesBuffer);
     end = process.hrtime();
     console.log(`Trytes - Compressed Size: ${trytesOutput.length} bytes, Time: ${diffHrtime(st, end)}ms`);
     summary.trytes[0] += trytesOutput.length;
@@ -107,8 +107,9 @@ sock.on('message', async msg => {
     summary.trytes[3] = Math.min(summary.trytes[3], trytesOutput.length);
 
     const decompressed = decompress(trytesOutput);
-    if (decompressed !== trytes) {
-        throw "Aaarrrggghhhh compress/decompress failed";
+    if (Buffer.compare(trytesBuffer, decompressed) !== 0) {
+        console.log("Aaarrrggghhhh compress/decompress failed");
+        process.exit(1);
     }
 
     summaryCount++;

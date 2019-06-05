@@ -1,23 +1,23 @@
 ## Functions
 
 <dl>
-<dt><a href="#compress">compress(trytes)</a> ⇒</dt>
+<dt><a href="#compressTrytes">compressTrytes(trytes)</a> ⇒</dt>
 <dd><p>Compress a trytes string and return a buffer of data.</p>
 </dd>
-<dt><a href="#decompress">decompress(buffer)</a> ⇒</dt>
-<dd><p>Decompress the buffer back to a tryte string.</p>
+<dt><a href="#compress">compress(trytes)</a> ⇒</dt>
+<dd><p>Compress a trytes array and return a buffer of data.</p>
 </dd>
-<dt><a href="#runLengthEncode">runLengthEncode(trytes)</a> ⇒</dt>
-<dd><p>Run length encode the tryte string.</p>
+<dt><a href="#decompressTrytes">decompressTrytes(bytes)</a> ⇒</dt>
+<dd><p>Decompress a binary buffer back to trytes string.</p>
 </dd>
-<dt><a href="#runLengthDecode">runLengthDecode(encoded)</a> ⇒</dt>
-<dd><p>Decode the run length encoded trytes,</p>
+<dt><a href="#decompress">decompress(bytes)</a> ⇒</dt>
+<dd><p>Decompress a binary buffer back to binary trytes buffer.</p>
 </dd>
 </dl>
 
-<a name="compress"></a>
+<a name="compressTrytes"></a>
 
-## compress(trytes) ⇒
+## compressTrytes(trytes) ⇒
 Compress a trytes string and return a buffer of data.
 
 **Kind**: global function  
@@ -25,41 +25,41 @@ Compress a trytes string and return a buffer of data.
 
 | Param | Description |
 | --- | --- |
-| trytes | The trytes to compress. |
+| trytes | The trytes to compress as uint 8 array. |
+
+<a name="compress"></a>
+
+## compress(trytes) ⇒
+Compress a trytes array and return a buffer of data.
+
+**Kind**: global function  
+**Returns**: A buffer of the compressed data.  
+
+| Param | Description |
+| --- | --- |
+| trytes | The trytes to compress as binary data. |
+
+<a name="decompressTrytes"></a>
+
+## decompressTrytes(bytes) ⇒
+Decompress a binary buffer back to trytes string.
+
+**Kind**: global function  
+**Returns**: The trytes as a string.  
+
+| Param | Description |
+| --- | --- |
+| bytes | The trytes to compress as uint 8 array. |
 
 <a name="decompress"></a>
 
-## decompress(buffer) ⇒
-Decompress the buffer back to a tryte string.
+## decompress(bytes) ⇒
+Decompress a binary buffer back to binary trytes buffer.
 
 **Kind**: global function  
 **Returns**: The tryte string.  
 
 | Param | Description |
 | --- | --- |
-| buffer | The buffer to decompress. |
-
-<a name="runLengthEncode"></a>
-
-## runLengthEncode(trytes) ⇒
-Run length encode the tryte string.
-
-**Kind**: global function  
-**Returns**: The run length encoded trytes.  
-
-| Param | Description |
-| --- | --- |
-| trytes | The trytes to run length encode. |
-
-<a name="runLengthDecode"></a>
-
-## runLengthDecode(encoded) ⇒
-Decode the run length encoded trytes,
-
-**Kind**: global function  
-**Returns**: The plain trytes.  
-
-| Param | Description |
-| --- | --- |
-| encoded | The run length encoded data. |
+| bytes | The buffer to decompress. |
 

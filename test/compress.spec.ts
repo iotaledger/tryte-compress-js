@@ -1,9 +1,8 @@
-import { compress } from "../src/compress";
+import { compress, compressTrytes } from "../src/compress";
 
 test("compress() can fail on invalid value", () => {
-    expect(compress(<any>undefined)).toBe(undefined);
-    expect(compress(<any>null)).toBe(undefined);
-    expect(compress("")).toBe(undefined);
+    expect(() => compress(<any>undefined)).toThrowError(/no data/);
+    expect(() => compress(<any>null)).toThrowError(/no data/);
 });
 
 test("compress() fail with not trytes", () => {
@@ -15,7 +14,7 @@ test("compress() fail with not trytes", () => {
     ];
     for (let i = 0; i < cases.length; i++) {
         expect(() => {
-            compress(cases[i]);
+            compressTrytes(cases[i]);
         }).toThrowError(/compress trytes/);
     }
 });
