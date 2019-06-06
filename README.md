@@ -1,4 +1,4 @@
-# IOTA Compress
+# IOTA Tryte Compress JavaScript
 
 IOTA Trytes compression/decompression provides a mechanism by which trytes can be more efficiently stored or transmitted.
 
