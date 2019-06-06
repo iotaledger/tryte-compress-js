@@ -1,4 +1,3 @@
-const { runLengthEncode } = require('../../dist/iota-compress');
 const HuffmanEncoding = require("./huffmanEncoding");
 
 let zmq = require('zeromq');
@@ -20,21 +19,17 @@ let count = 0;
 
 // Handle the tx_trytes message
 const allChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ9123_";
-const globalFreq = { };
+const globalFreq = { 1: 1, 2: 1, 3: 1, _: 1 };
 const huffman = new HuffmanEncoding();
 
-for (let i = 0; i < allChars.length; i++) {
-    globalFreq[allChars[i]] = 1;
-}
+// for (let i = 0; i < allChars.length; i++) {
+//     globalFreq[allChars[i]] = 1;
+// }
 
 sock.on('message', async msg => {
     const data = msg.toString().split(' ');
 
-    let trytes = data[1];
-
-    let rle = runLengthEncode(trytes);
-
-    huffman.generateFrequency(rle, globalFreq)
+    huffman.generateFrequency(data[1], globalFreq);
 
     count++;
     console.log(count);
@@ -43,17 +38,46 @@ sock.on('message', async msg => {
 process.on('SIGINT', function () {
     console.log(globalFreq);
     huffman.generateTree(globalFreq);
-    console.log("export const HUFFMAN_TABLE: { [id: string]: string } = {");
+    console.log("HUFFMAN_TABLE for TypeScript");
     for (let i = 0; i < allChars.length; i++) {
-        console.log(`   "${allChars[i]}": "${huffman.encoding[allChars[i]]}",`);
+        const comma = i < allChars.length - 1 ? ',' : '';
+        console.log(`   ${allChars[i].charCodeAt(0)}: { bits: 0b${huffman.encoding[allChars[i]]}, length: ${huffman.encoding[allChars[i]].length} }${comma}`);
     }
-    console.log("};");
     console.log();
-    console.log("export const HUFFMAN_TABLE_REVERSE: { [id: string]: string } = {")
+    console.log("HUFFMAN_TABLE_REVERSE_4 for TypeScript");
     for (let i = 0; i < allChars.length; i++) {
-        console.log(`   "${huffman.encoding[allChars[i]]}": "${allChars[i]}",`);
+        if (huffman.encoding[allChars[i]].length === 4) {
+            console.log(`   0b${huffman.encoding[allChars[i]]}: ${allChars[i].charCodeAt(0)},`);
+        }
     }
-    console.log("};");
+    console.log();
+    console.log("HUFFMAN_TABLE_REVERSE_5 for TypeScript");
+    for (let i = 0; i < allChars.length; i++) {
+        if (huffman.encoding[allChars[i]].length === 5) {
+            console.log(`   0b${huffman.encoding[allChars[i]]}: ${allChars[i].charCodeAt(0)},`);
+        }
+    }
+    console.log();
+    console.log("HUFFMAN_TABLE_REVERSE_6 for TypeScript");
+    for (let i = 0; i < allChars.length; i++) {
+        if (huffman.encoding[allChars[i]].length === 6) {
+            console.log(`   0b${huffman.encoding[allChars[i]]}: ${allChars[i].charCodeAt(0)},`);
+        }
+    }
+    console.log();
+    console.log("HUFFMAN_TABLE_REVERSE_7 for TypeScript");
+    for (let i = 0; i < allChars.length; i++) {
+        if (huffman.encoding[allChars[i]].length === 7) {
+            console.log(`   0b${huffman.encoding[allChars[i]]}: ${allChars[i].charCodeAt(0)},`);
+        }
+    }
+    console.log();
+    console.log("HUFFMAN_TABLE_REVERSE_8 for TypeScript");
+    for (let i = 0; i < allChars.length; i++) {
+        if (huffman.encoding[allChars[i]].length === 8) {
+            console.log(`   0b${huffman.encoding[allChars[i]]}: ${allChars[i].charCodeAt(0)},`);
+        }
+    }
     console.log('Exiting...');
     process.exit(2);
 });

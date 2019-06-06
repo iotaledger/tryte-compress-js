@@ -4,7 +4,7 @@ const brotli = require('brotli');
 const pako = require('pako');
 const lz = require('lzjs');
 const compressjs = require('compressjs');
-const { compress, decompress } = require('../../dist/iota-compress');
+const { compress, decompress } = require('../../dist/tryte-compress');
 
 const TRYTES_LENGTH = 2673;
 

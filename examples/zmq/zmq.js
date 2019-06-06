@@ -1,4 +1,4 @@
-const { compress, decompress } = require('../../dist/iota-compress');
+const { compress, decompress } = require('@iota/tryte-compress');
 const brotli = require('brotli');
 const compressjs = require('compressjs');
 const lz = require('lzjs');

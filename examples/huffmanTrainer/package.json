@@ -1,12 +1,12 @@
 {
-  "name": "huffman-trainer",
-  "description": "IOTA Compression ZMQ",
-  "version": "1.0.0",
-  "main": "huffmanTrainer.js",
-  "scripts": {
-    "run": "node huffmanTrainer"
-  },
-  "dependencies": {
-    "zeromq": "^5.1.0"
-  }
+    "name": "huffman-trainer",
+    "description": "IOTA Compression ZMQ",
+    "version": "1.0.0",
+    "main": "huffmanTrainer.js",
+    "scripts": {
+        "start": "node huffmanTrainer"
+    },
+    "dependencies": {
+        "zeromq": "^5.1.0"
+    }
 }

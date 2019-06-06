@@ -1,0 +1,12 @@
+{
+    "name": "simple",
+    "version": "1.0.0",
+    "description": "Simple example of tryte-compress",
+    "main": "simple.js",
+    "scripts": {
+        "start": "node simple"
+    },
+    "dependencies": {
+        "@iota/tryte-compress": "file:../.."
+    }
+}

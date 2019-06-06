@@ -11,44 +11,42 @@ The algorithm uses a combination of run-length-encoding and huffman encoding bas
 Install this package using the following commands:
 
 ```shell
-npm install @iota/compress
+npm install iotaledger/tryte-compress-js
 ```
 
 or
 
 ```shell
-yarn add @iota/compress
+yarn add iotaledger/tryte-compress-js
 ```
 
 ## Example Usage
 
 ```js
-const iotaCompress = require('@iota/compress');
-
-const iotaCompress = require('../dist/iota-compress');
+const iotaCompress = require('@iota/tryte-compress');
 
 let trytes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ9';
 console.log('trytes', trytes);
 console.log('trytes length', trytes.length);
 
-let compressedBytes = iotaCompress.compress(trytes);
+let compressedBytes = iotaCompress.compressTrytes(trytes);
 console.log('compressed', compressedBytes);
 console.log('compressed length', compressedBytes.length);
 
-let decompressed = iotaCompress.decompress(compressedBytes);
-console.log('decompressed', decompressed);
+let decompressed = iotaCompress.decompressTrytes(compressedBytes);
+console.log('decompressed', decompressed, decompressed.length);
 console.log('matches', decompressed === trytes);
 
 trytes = '9'.repeat(2673);
 console.log('trytes', trytes);
 console.log('trytes length', trytes.length);
 
-compressedBytes = iotaCompress.compress(trytes);
+compressedBytes = iotaCompress.compressTrytes(trytes);
 console.log('compressed', compressedBytes);
 console.log('compressed length', compressedBytes.length);
 
-decompressed = iotaCompress.decompress(compressedBytes);
-console.log('decompressed', decompressed);
+decompressed = iotaCompress.decompressTrytes(compressedBytes);
+console.log('decompressed', decompressed, decompressed.length);
 console.log('matches', decompressed === trytes);
 ```
 
@@ -57,19 +55,16 @@ Will output:
 ```shell
 trytes ABCDEFGHIJKLMNOPQRSTUVWXYZ9
 trytes length 27
-compressed <Buffer 4f 0f fb c9 62 f0 8c c3 9a ed 5a 2a 2d f6 6b 1c 60 00>
+compressed <Buffer f2 f0 df 93 46 0f 31 c3 59 b7 5a 54 b4 6f d6 38 06 00>
 compressed length 18
-decompressed ABCDEFGHIJKLMNOPQRSTUVWXYZ9
+decompressed ABCDEFGHIJKLMNOPQRSTUVWXYZ9 27
 matches true
-trytes 9999999...999999999
+trytes 9999999999999...9999999999999
 trytes length 2673
-compressed <Buffer 01 3d 09 80 00>
+compressed <Buffer 80 bc 90 01 00>
 compressed length 5
-decompressed 9999999...999999999
-matches true
-compressed 241 <Buffer 9f a8 3e f9 0d 07 9f 01 ab bc 7e ee 7f dd 02 27 ee e7 fd d0 22 7e ee 7f dd 02 27 ee e7 fd d0 22 7e ee 7f dd 02 27 ee e7 fd d0 22 7e ee 7f dd 02 27 ee ... >
-matches true
-```
+decompressed 9999999999999...9999999999999 2673
+matches true```
 
 ## API Reference
 
@@ -90,7 +85,7 @@ The results of the current algorithm compared with some industry standard algori
 
 They were generated using the zmq example processing 10,000 transactions, these are the averages.
 
-```
+```shell
 brotli - Compressed Size: 669 bytes, Saving Size: 75.0 %, Time: 4ms, Max: 1602 bytes, Min: 167 bytes
 deflate - Compressed Size: 694 bytes, Saving Size: 74.0 %, Time: 1ms, Max: 1646 bytes, Min: 180 bytes
 huffman - Compressed Size: 919 bytes, Saving Size: 65.6 %, Time: 1ms, Max: 1654 bytes, Min: 525 bytes

@@ -19,7 +19,7 @@ if (process.env.MINIFY) {
 export default {
     input: './src/index.ts',
     output: {
-        file: `dist/iota-compress${process.env.MINIFY ? '.min' : ''}.js`,
+        file: `dist/tryte-compress${process.env.MINIFY ? '.min' : ''}.js`,
         format: 'umd',
         name: 'IotaCompress',
         compact: process.env.MINIFY
