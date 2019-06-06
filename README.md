@@ -64,7 +64,8 @@ trytes length 2673
 compressed <Buffer 80 bc 90 01 00>
 compressed length 5
 decompressed 9999999999999...9999999999999 2673
-matches true```
+matches true
+```
 
 ## API Reference
 
