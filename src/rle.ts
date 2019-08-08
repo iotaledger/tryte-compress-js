@@ -25,9 +25,7 @@ export function runLengthEncode(trytes: Buffer, rleEncoded: Buffer): number {
         }
     }
 
-    writePos = appendRun(rleEncoded, writePos, count, prev);
-
-    return writePos;
+    return appendRun(rleEncoded, writePos, count, prev);
 }
 
 /**
