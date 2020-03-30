@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
     (global = global || self, factory(global.IotaCompress = {}));
-}(this, function (exports) { 'use strict';
+}(this, (function (exports) { 'use strict';
 
     /**
      * Current version of compression algorithm.
@@ -360,4 +360,4 @@
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));

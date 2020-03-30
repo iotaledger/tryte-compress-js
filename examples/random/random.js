@@ -1,4 +1,4 @@
-const { compress, decompress } = require('../../dist/tryte-compress');
+const { compress, decompress } = require('@iota/tryte-compress');
 const brotli = require('brotli');
 const compressjs = require('compressjs');
 const lz = require('lzjs');
@@ -81,7 +81,7 @@ for (let i = 0; i < 1000; i++) {
     summary.bzip2[3] = Math.min(summary.bzip2[3], bzip2Output.length);
 
     st = process.hrtime();;
-    const trytesOutput = compress(trytes);
+    const trytesOutput = compress(trytesBuffer);
     end = process.hrtime();;
     console.log(`Trytes - Compressed Size: ${trytesOutput.length} bytes, Time: ${diffHrtime(st, end)}ms`);
     summary.trytes[0] += trytesOutput.length;
@@ -89,8 +89,7 @@ for (let i = 0; i < 1000; i++) {
     summary.trytes[2] = Math.max(summary.trytes[2], trytesOutput.length);
     summary.trytes[3] = Math.min(summary.trytes[3], trytesOutput.length);
 
-    const decompressed = decompress(trytesOutput);
-    if (decompressed !== trytes) {
+    if (decompress(trytesOutput).compare(trytesBuffer)) {
         throw "Aaarrrggghhhh compress/decompress failed";
     }
 

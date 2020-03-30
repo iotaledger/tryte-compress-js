@@ -7,6 +7,6 @@
         "start": "node huffmanTrainer"
     },
     "dependencies": {
-        "zeromq": "^5.1.0"
+        "zeromq": "^5.2.0"
     }
 }

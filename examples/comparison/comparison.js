@@ -4,7 +4,7 @@ const brotli = require('brotli');
 const pako = require('pako');
 const lz = require('lzjs');
 const compressjs = require('compressjs');
-const { compress, decompress } = require('../../dist/tryte-compress');
+const { compress, decompress } = require('@iota/tryte-compress');
 
 const TRYTES_LENGTH = 2673;
 
@@ -77,12 +77,12 @@ function run(mode, numIterations) {
         results.bzip2[1] += end - st;
 
         st = Date.now();
-        const trytesOutput = compress(trytesString);
+        const trytesOutput = compress(trytes);
         end = Date.now();
         results.trytes[0] += trytesOutput.length;
         results.trytes[1] += end - st;
 
-        if (decompress(trytesOutput) !== trytesString) {
+        if (decompress(trytesOutput).compare(trytes)) {
             console.error('!!!!!!!!!!! Compression/Decompress failed')
         }
     }
@@ -134,7 +134,7 @@ console.log(`Payload Size: ${TRYTES_LENGTH}`);
 console.log();
 
 const numVariants = 3;
-const numIterations = 1000;
+const numIterations = 100;
 run('random', numIterations);
 run('random-and-plain-signature-message-fragment', numIterations);
 run('random-and-mixed-signature-message-fragment', numIterations);
