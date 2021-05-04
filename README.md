@@ -1,5 +1,7 @@
 # IOTA Tryte Compress JavaScript
 
+> This repository is now deprecated as it can only be used with the legacy IOTA network.
+
 IOTA Trytes compression/decompression provides a mechanism by which trytes can be more efficiently stored or transmitted.
 
 By considering the data domain and the specific way in which tryte data is used we created an algorithm that works extremely efficiently in the most common use cases. The algorithm is also implemented in such a way as to make it lightweight enough to be used by embedded devices.
